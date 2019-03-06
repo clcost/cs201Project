@@ -1,51 +1,70 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <stdbool.h>
-
-typedef struct movie {
-	void **data;
-	char uniqueId[10];
-	char titleType[20];
-	char titleName[200];
-	bool adultFilm;
-	int startYear;
-	int endYear;
-	int runTime;
-	char genreOne[15];
-	char genreTwo[15];
-	char genreThree[15];
-
-} MOVIE;
-
-MOVIE *newMovie() {
-	MOVIE *newMovie;
-	newMovie = (MOVIE *)malloc(sizeof(MOVIE));
-	newMovie->data = NULL;
-	strcpy(newMovie->uniqueId, "\0");
-	strcpy(newMovie->titleType, "\0");
-	strcpy(newMovie->titleName, "\0");
-	newMovie->adultFilm = 0;
-	newMovie->startYear = 0;
-	newMovie->endYear = 0;
-	newMovie->runTime = 0;
-	strcpy(newMovie->genreOne, "\0");
-	strcpy(newMovie->genreTwo, "\0");
-	strcpy(newMovie->genreThree, "\0");
-
-	return newMovie;
-}
-
 
 int main (void) {
 
-	char menuOp[10];
-	char logName[20];
-	printf("Welcome to the IMDb database! In this program you may create your own custom movie database.\n");
-	printf("What would you like your custome database to be named?\n");
-	
-	while (strcmp(menuOp, "Exit") != 1 || strcmp(menuOp, "exit") != 1) {
+	//char menuOp[10];
+	//char logName[20];
+	char uniqueId[10];
+	char titleType[30];
+	char primTitle[500];
+	char origTitle[500];
+	char adultFilm[2];
+	char startYear[5];
+	char endYear[5];
+	char runTime[10];
+	char genre[40];
+	char temp;
 
+	int i = 0;
+
+	FILE *fp = fopen("sample.basics.tsv", "r");
+ 
+	fscanf(fp, "%s", uniqueId);
+	fscanf(fp, "%s", titleType);
+	printf("flag 1\n");
+	while (1) {
+		printf("flag 2\n");
+	//	fscanf(fp, "%s", uniqueId);
+	//	fscanf(fp, "%s", titleType);
+		i = 0;
+		while (1) {
+			printf("flag 3\n");
+			temp = fgetc(fp);
+			if (temp <= 9) break;
+			primTitle[i] = temp;
+			i = i + 1;
+		}
+		i = 0;
+		while (1) {
+			printf("flag 4\n");
+			temp = fgetc(fp); 
+			if (temp <= 9) break;
+			origTitle[i] = temp;
+			i = i + 1;
+		}
+		printf("flag 5\n");
+
+		fscanf(fp, "%s", adultFilm);
+		fscanf(fp, "%s", startYear);
+		fscanf(fp, "%s", endYear);
+		fscanf(fp, "%s", runTime);
+		fscanf(fp, "%s", genre);
+
+		printf("%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n", uniqueId, titleType, primTitle, origTitle, adultFilm, startYear, endYear, runTime, genre);
+		
+		temp = fgetc(fp);
+		if (temp <= 9) break;
+
+		fscanf(fp, "%s", uniqueId);
+		fscanf(fp, "%s", titleType);
+	
+//		printf("%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n", uniqueId, titleType, primTitle, origTitle, adultFilm, startYear, endYear, runTime, genre);
 	}
+
+	fclose(fp);
+
+	return 0;
 
 }
