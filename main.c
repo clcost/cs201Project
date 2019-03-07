@@ -1,70 +1,83 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <ctype.h>
 
 int main (void) {
 
-	//char menuOp[10];
-	//char logName[20];
-	char uniqueId[10];
+	char uniqueId[20];
 	char titleType[30];
 	char primTitle[500];
 	char origTitle[500];
-	char adultFilm[2];
-	char startYear[5];
-	char endYear[5];
-	char runTime[10];
-	char genre[40];
+	char adultFilm[3];
+	char startYear[6];
+	char endYear[6];
+	char runTime[20];
+	char genre[50];
 	char temp;
 
+	int count = 0;
 	int i = 0;
 
 	FILE *fp = fopen("sample.basics.tsv", "r");
- 
-	fscanf(fp, "%s", uniqueId);
-	fscanf(fp, "%s", titleType);
-	printf("flag 1\n");
+ 		
+		fscanf(fp, "%s", uniqueId); printf("|%s|\n", uniqueId);
+		fscanf(fp, "%s", titleType); printf("|%s|\n", titleType);
+		temp = fgetc(fp);
+	
 	while (1) {
-		printf("flag 2\n");
-	//	fscanf(fp, "%s", uniqueId);
-	//	fscanf(fp, "%s", titleType);
+		//fscanf(fp, "%s", uniqueId);
+		//fscanf(fp, "%s", titleType);
 		i = 0;
+		//temp = fgetc(fp);
+		
 		while (1) {
-			printf("flag 3\n");
+			if (!isspace(temp)) break; 
 			temp = fgetc(fp);
-			if (temp <= 9) break;
+		}
+		printf("ffs\n");
+		while (1) {
+			if (temp == '\t') break;
 			primTitle[i] = temp;
 			i = i + 1;
+			temp = fgetc(fp);
 		}
+	
+		primTitle[i] = '\0'; printf("[%s]\n", primTitle);
 		i = 0;
+		temp = fgetc(fp);
+
 		while (1) {
-			printf("flag 4\n");
-			temp = fgetc(fp); 
-			if (temp <= 9) break;
+			if (!isspace(temp)) break;
+			temp = fgetc(fp);
+		}
+
+		while (1) {
+			if (temp == '\t') break;
 			origTitle[i] = temp;
 			i = i + 1;
+			temp = fgetc(fp);
 		}
-		printf("flag 5\n");
+		origTitle[i] = '\0'; printf("[%s]\n", origTitle);
+		//i = 0;
+		//temp = fgetc(fp);
 
-		fscanf(fp, "%s", adultFilm);
+		fscanf(fp, "%s", adultFilm); printf("(%s)\n", adultFilm);
 		fscanf(fp, "%s", startYear);
 		fscanf(fp, "%s", endYear);
 		fscanf(fp, "%s", runTime);
-		fscanf(fp, "%s", genre);
+		fscanf(fp, "%s", genre); printf("(%s)\n", genre);
 
-		printf("%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n", uniqueId, titleType, primTitle, origTitle, adultFilm, startYear, endYear, runTime, genre);
-		
+		printf("%s %s %s %s %s %s %s %s %s\n", uniqueId, titleType, primTitle, origTitle, adultFilm, startYear, endYear, runTime, genre);
+		count = count + 1;
 		temp = fgetc(fp);
-		if (temp <= 9) break;
+		if (temp == -1) {printf("%d BROKE THE LOOP\n", count); break; }
 
 		fscanf(fp, "%s", uniqueId);
 		fscanf(fp, "%s", titleType);
-	
-//		printf("%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n", uniqueId, titleType, primTitle, origTitle, adultFilm, startYear, endYear, runTime, genre);
 	}
-
+	printf("%d\n", count);
 	fclose(fp);
 
 	return 0;
-
 }
