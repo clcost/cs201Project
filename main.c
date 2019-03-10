@@ -1,4 +1,6 @@
-//main.c for cs201Project written by Coleman Cost
+//main.c
+//#include "user.h"
+#include "database.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -17,10 +19,11 @@ int main (void) {
 	char genre[50];
 	char temp;
 
-	int count = 0;
 	int i = 0;
 
-	FILE *fp = fopen("movie_records_sample", "r");
+	MOVIEDB *head = NULL;
+
+	FILE *fp = fopen("movie_records", "r");
  		
 		fscanf(fp, "%s", uniqueId);			//scanning in uniqueId and titleType from file
 		fscanf(fp, "%s", titleType);
@@ -63,13 +66,16 @@ int main (void) {
 		fscanf(fp, "%s", runTime);
 		fscanf(fp, "%s", genre);
 
-		printf("%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n", uniqueId, titleType, primTitle, origTitle, adultFilm, startYear, endYear, runTime, genre); //testing the variables that were just read in
-		count = count + 1;
-		
+		//printf("%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n", uniqueId, titleType, primTitle, origTitle, adultFilm, startYear, endYear, runTime, genre); //testing the variables that were just read in
+		MOVIEDB *pointerToFirstMovie = createDatabase(uniqueId, titleType, primTitle, origTitle, adultFilm, startYear, endYear, runTime, genre, NULL);
+		if (pointerToFirstMovie != 0) {
+			head = pointerToFirstMovie;
+		}
+
 		temp = fgetc(fp);
 		fscanf(fp, "%s", uniqueId);			//read first catagory again
 
-		if (feof(fp)) {printf("%d BROKE THE LOOP\n", count); break; } //if we are at end of file, break the loop
+		if (feof(fp)) break; 				//if we are at end of file, break the loop
 
 		fscanf(fp, "%s", titleType); 			//read second catagory again
 	}
