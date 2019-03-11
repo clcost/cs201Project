@@ -3,7 +3,7 @@
 struct MOVIEDB * createDatabase(char uniqueId[], char titleType[], char primTitle[], char origTitle[], char adultFilm[], char startYear[], char endYear[], char runTime[], char genre[], struct MovieDB *currentLastMovie) {
 	//head and tail of all movies list
 	struct MovieDB *head = NULL;
-
+	struct MovieDB *tail = NULL;
 	//initialize single mvie structure and get first movie
 	struct MovieDB *temp = (struct MovieDB*) malloc (sizeof(struct MovieDB));
 	
@@ -23,6 +23,8 @@ struct MOVIEDB * createDatabase(char uniqueId[], char titleType[], char primTitl
 		temp->prev = NULL;
 		currentLastMovie = temp;
 		head = temp;
+
+		return head;
 	}
 	//else this is not our first movie
 	else {
@@ -32,6 +34,7 @@ struct MOVIEDB * createDatabase(char uniqueId[], char titleType[], char primTitl
 
 		//point the know last movie's next to here
 		currentLastMovie->next = temp;
+		tail = temp;
 	}
 	
 
@@ -50,5 +53,14 @@ struct MOVIEDB * createDatabase(char uniqueId[], char titleType[], char primTitl
 
 
 
-	return head;
+	return tail;
+}
+
+void printList(struct MovieDB *start) {
+	struct MovieDB *current = start;
+	while (current != NULL) {
+		printf("%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n", current->uniqueId, current->titleType, current->primTitle, current->origTitle, current->adultFilm, current->startYear, current->endYear, current->runTime, current->genre);
+		current = current->next;
+	}
+	return;
 }

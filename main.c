@@ -22,7 +22,8 @@ int main (void) {
 	int i = 0;
 
 	MOVIEDB *head = NULL;
-
+	MOVIEDB *currentLastMovie = NULL;
+	
 	FILE *fp = fopen("movie_records", "r");
  		
 		fscanf(fp, "%s", uniqueId);			//scanning in uniqueId and titleType from file
@@ -66,11 +67,13 @@ int main (void) {
 		fscanf(fp, "%s", runTime);
 		fscanf(fp, "%s", genre);
 
-		//printf("%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n", uniqueId, titleType, primTitle, origTitle, adultFilm, startYear, endYear, runTime, genre); //testing the variables that were just read in
-		MOVIEDB *pointerToFirstMovie = createDatabase(uniqueId, titleType, primTitle, origTitle, adultFilm, startYear, endYear, runTime, genre, NULL);
-		if (pointerToFirstMovie != 0) {
-			head = pointerToFirstMovie;
+		MOVIEDB *currentMovie = createDatabase(uniqueId, titleType, primTitle, origTitle, adultFilm, startYear, endYear, runTime, genre, currentLastMovie);
+
+		if (head == NULL) {
+			head = currentMovie;
 		}
+
+		currentLastMovie = currentMovie;
 
 		temp = fgetc(fp);
 		fscanf(fp, "%s", uniqueId);			//read first catagory again
@@ -80,6 +83,7 @@ int main (void) {
 		fscanf(fp, "%s", titleType); 			//read second catagory again
 	}
 
+	printList(head);
 	fclose(fp);
 
 	return 0;

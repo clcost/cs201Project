@@ -20,5 +20,6 @@ typedef struct MovieDB {
 } MOVIEDB;
 
 //void printMenu();
+void printList(struct MovieDB *);
 struct MOVIEDB * createDatabase(char[], char[], char[], char[], char[], char[], char[], char[], char[], struct MovieDB *);     //constructor?
 //MovieDB* returnSearch();
