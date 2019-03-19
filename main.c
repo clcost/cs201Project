@@ -24,7 +24,10 @@ int main (void) {
 	MOVIEDB *head = NULL;
 	MOVIEDB *currentLastMovie = NULL;
 	
-	FILE *fp = fopen("movie_records", "r");
+	FILE *fp = fopen("movie_records_sample", "r");
+
+	printf("Creating IMDb Movie Database.\n");
+	printf("Loading... (Please be patient, may take a couple minutes)\n");
  		
 		fscanf(fp, "%s", uniqueId);			//scanning in uniqueId and titleType from file
 		fscanf(fp, "%s", titleType);
@@ -85,6 +88,81 @@ int main (void) {
 
 	printList(head);
 	fclose(fp);
+	printf("IMDb database created. Loading successful!\n\n");
+	printf("Welcome to your customizable IMDb movie database!\n\n");
+	printf("In this program you are able search through IMDb's movies and create your own unique database.\n\n");
+Mainmenu:
+	printMainMenu();
 
+	char option[10];
+	scanf("%s", option);
+	i = 0;
+	while (option[i]) {					//makes option all lowercase for ease of reading
+		option[i] = tolower(option[i]);
+		i = i + 1;
+	}
+	
+	printf("%s\n", option);
+	if (strcmp(option, "quit") == 0) {
+		printf("Goodbye!\n");
+		goto End;
+	}
+	else if (strcmp(option, "create") == 0) {
+		//do something with a new user and go to user menu
+
+		goto Usermenu;
+	}
+	else if(strcmp(option, "login") == 0) {
+		//login with existing user and jump to user menu
+		goto Usermenu;
+	}
+	else {
+		printf("Option does not exist! Check the Main Menu again.\n\n");
+		goto Mainmenu;
+	}
+Usermenu:
+	printUserMenu();
+
+	scanf("%s", option);
+	i = 0;
+	while (option[i]) {
+		option[i] = tolower(option[i]);
+		i = i + 1;
+	}
+	if (strcmp(option, "logout") == 0) {
+		printf("Logging user out. Returning to Main Menu.\n\n");
+		goto Mainmenu;
+	}
+	else if (strcmp(option, "search") == 0) {
+			//search IMDb database and print results for user to look at
+			goto Usermenu;
+	}
+	else if (strcmp(option, "add") == 0) {
+		//add certain movie to user database
+		goto Usermenu;
+	}
+	else if (strcmp(option, "delete") == 0) {
+		//deletes a certain movie from the user's database
+		goto Usermenu;
+	}
+	else if (strcmp(option, "update") == 0) {
+		//rewrites user file to the file is updated based on what the user has added or deleted
+		goto Usermenu;
+	}
+	else if (strcmp(option, "preview") == 0) {
+		//prints user's database to standard output so he/she can review it before updating
+		goto Usermenu;
+	}
+	else if (strcmp(option, "sort") == 0) {
+		//sorts users database by title using some sort of sorting algorithm that is efficient
+		goto Usermenu;
+	}
+	else {
+		printf("Option does not exist! Check the User Menu options again.\n\n");
+		goto Usermenu;
+	}
+
+
+End:
 	return 0;
 }

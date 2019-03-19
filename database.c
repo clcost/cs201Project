@@ -64,3 +64,14 @@ void printList(struct MovieDB *start) {
 	}
 	return;
 }
+
+void printMainMenu() {
+	printf("==========Main Menu==========\n\n");
+	printf("Options\t\tDescription\n");
+	printf("_____________________________\n\n");
+	printf("Create\t\tCreate a new database for yourself\n");
+	printf("Login\t\tIf you already have a database log back in to load it\n");
+	printf("Quit\t\tExit out of program\n");
+
+	return;
+}
