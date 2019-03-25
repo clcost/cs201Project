@@ -4,11 +4,11 @@
 #include <ctype.h>
 #include <stdlib.h>
 #include "database.h"
-
+//in the user database we only need title, genre, runTime, and year released
+//then the user will input if they own it on dvd bluray or digital and the date they obtained the movie through std input
 typedef struct user {
 	char userName[100];
-	struct MovieDB* moviesOfUser; //pointer to start of userDB
-	struct MovieDB* tailOfMoviesOfUser; //pointer the the end of user's database
+	struct BST_MOVIES* topOfUsersMovieTree; //pointer to top of User's DB Tree
 
 	struct user* next;
 	struct user* prev;
@@ -17,8 +17,7 @@ typedef struct user {
 void printUserMenu();
 void createUser();
 void deleteUser();
-void addMovie(struct user *, char[], char[], char[], char[], char[], char[], char[], char[], char[]);
-struct MOVIEDB * addToUserDB();	//after searching for title in the main DB add movie to userDB
+struct BST_MOVIES * addToUserDB(struct user *, char[], char[], char[], char[], char[], char[], char[], char[], char[]);	//after searching for title in the main DB add movie to userDB
 void deletefromUserDB(); //remove movie from user's DB
 void updateUserDB(); //update user DB by rewriting to the user's file
 void sortUserDB(); //sort user database by title

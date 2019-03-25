@@ -21,8 +21,10 @@ int main (void) {
 
 	int i = 0;
 
-	MOVIEDB *head = NULL;
-	MOVIEDB *currentLastMovie = NULL;
+	BST_MOVIES *parent = NULL;
+	BST_MOVIES *left = NULL;
+	BST_MOVIES *right = NULL;
+	BST_MOVIES *topOfTree = NULL;
 	
 	FILE *fp = fopen("movie_records_sample", "r");
 
@@ -70,13 +72,9 @@ int main (void) {
 		fscanf(fp, "%s", runTime);
 		fscanf(fp, "%s", genre);
 
-		MOVIEDB *currentMovie = createDatabase(uniqueId, titleType, primTitle, origTitle, adultFilm, startYear, endYear, runTime, genre, currentLastMovie);
+		printf("%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n", uniqueId, titleType, primTitle, origTitle, adultFilm, startYear, endYear, runTime, genre);
 
-		if (head == NULL) {
-			head = currentMovie;
-		}
-
-		currentLastMovie = currentMovie;
+		topOfTree = insertToMovieBST(topOfTree, uniqueId, titleType, primTitle, origTitle, adultFilm, startYear, endYear, runTime, genre);
 
 		temp = fgetc(fp);
 		fscanf(fp, "%s", uniqueId);			//read first catagory again
@@ -86,11 +84,26 @@ int main (void) {
 		fscanf(fp, "%s", titleType); 			//read second catagory again
 	}
 
-	printList(head);
+	printList(topOfTree);
 	fclose(fp);
 	printf("IMDb database created. Loading successful!\n\n");
 	printf("Welcome to your customizable IMDb movie database!\n\n");
 	printf("In this program you are able search through IMDb's movies and create your own unique database.\n\n");
+
+	printf("Enter movie to search for:\n");
+	char searchTitle[500];
+	scanf("%s", searchTitle);
+	struct BST_Movies *returnedSearch = (struct BST_Movies*) malloc (sizeof(struct BST_Movies));
+	returnedSearch = NULL;
+	returnedSearch = searchIMDb(topOfTree, searchTitle);
+	if (returnedSearch == NULL) {
+		printf("Movie does not exist.\n");
+	}
+	else {
+		printf("Movie found.\n");
+		printf("%s\t%s\t%s\n", returnedSearch->primTitle, returnedSearch->origTitle, returnedSearch->startYear);
+	}
+
 Mainmenu:
 	printMainMenu();
 

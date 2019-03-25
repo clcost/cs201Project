@@ -3,8 +3,8 @@
 #include <string.h>
 #include <ctype.h>
 #include <stdlib.h>
-
-typedef struct MovieDB {
+//need to form a tree rather than a linked list
+typedef struct BST_Movies {
 	char uniqueId[20];
 	char titleType[30];
 	char primTitle[500];
@@ -15,11 +15,12 @@ typedef struct MovieDB {
 	char runTime[20];
 	char genre[50];
 
-	struct MovieDB* next;
-	struct MovieDB* prev;
-} MOVIEDB;
+	struct BST_Movies * left;
+	struct BST_Movies * right;
+	struct BST_Movies * parent;
+} BST_MOVIES;
 
 void printMainMenu();
-void printList(struct MovieDB *);
-struct MOVIEDB * createDatabase(char[], char[], char[], char[], char[], char[], char[], char[], char[], struct MovieDB *);     //constructor?
-//MovieDB* returnSearch();
+struct BST_Movies * insertToMovieBST(struct BST_Movies *, char[], char[], char[], char[], char[], char[], char[], char[], char[]);
+const char * titleWithoutATheAnd(char[]);
+struct BST_Movies * searchIMDb(struct BST_Movies *, char[]);
