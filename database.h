@@ -15,6 +15,9 @@ typedef struct BST_Movies {
 	char runTime[20];
 	char genre[50];
 
+	char dateAdded[10];
+	char mediaType[8];
+
 	struct BST_Movies * left;
 	struct BST_Movies * right;
 	struct BST_Movies * parent;

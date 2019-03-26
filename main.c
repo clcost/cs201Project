@@ -1,5 +1,5 @@
 //main.c
-//#include "user.h"
+#include "user.h"
 #include "database.h"
 #include <stdlib.h>
 #include <stdio.h>
@@ -20,6 +20,9 @@ int main (void) {
 	char temp;
 
 	int i = 0;
+	//FIX
+	struct user *PointerToFirstUser = (struct user*) malloc (sizeof(struct user));
+	PointerToFirstUser = NULL;
 
 	BST_MOVIES *parent = NULL;
 	BST_MOVIES *left = NULL;
@@ -72,8 +75,6 @@ int main (void) {
 		fscanf(fp, "%s", runTime);
 		fscanf(fp, "%s", genre);
 
-		printf("%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n", uniqueId, titleType, primTitle, origTitle, adultFilm, startYear, endYear, runTime, genre);
-
 		topOfTree = insertToMovieBST(topOfTree, uniqueId, titleType, primTitle, origTitle, adultFilm, startYear, endYear, runTime, genre);
 
 		temp = fgetc(fp);
@@ -84,13 +85,23 @@ int main (void) {
 		fscanf(fp, "%s", titleType); 			//read second catagory again
 	}
 
-	printList(topOfTree);
 	fclose(fp);
 	printf("IMDb database created. Loading successful!\n\n");
 	printf("Welcome to your customizable IMDb movie database!\n\n");
 	printf("In this program you are able search through IMDb's movies and create your own unique database.\n\n");
-
-	printf("Enter movie to search for:\n");
+	char userName1[100];
+	while (1) { //while quit is not entered, the function keeps asking for names to be added to list
+		printf("Add a username: ");
+		scanf("%s", userName1);
+		if (strcmp(userName1, "quit") == 0) break;
+		createUser(&PointerToFirstUser, userName1);
+	}
+	printUserList(PointerToFirstUser); //prints the list before any deletes
+	printf("Enter a username to delete: ");
+	scanf("%s", userName1);
+	deleteUser(&PointerToFirstUser, userName1);
+	printUserList(PointerToFirstUser); //prints the list after delete
+	/*printf("Enter movie to search for:\n");
 	char searchTitle[500];
 	scanf("%s", searchTitle);
 	struct BST_Movies *returnedSearch = (struct BST_Movies*) malloc (sizeof(struct BST_Movies));
@@ -102,8 +113,8 @@ int main (void) {
 	else {
 		printf("Movie found.\n");
 		printf("%s\t%s\t%s\n", returnedSearch->primTitle, returnedSearch->origTitle, returnedSearch->startYear);
-	}
-
+	}*/
+/*
 Mainmenu:
 	printMainMenu();
 
@@ -117,11 +128,17 @@ Mainmenu:
 	
 	printf("%s\n", option);
 	if (strcmp(option, "quit") == 0) {
+		//exits out of program
 		printf("Goodbye!\n");
 		goto End;
 	}
 	else if (strcmp(option, "create") == 0) {
 		//do something with a new user and go to user menu
+		char userName[100];
+		printf("New User Creation: What is your name? (Please use first name and max is 100 characters)\n");
+		scanf("%s", userName);
+		createUser(PointerToFirstUser, userName);
+		printf("Welcome %s to the User Menu!\n", userName);
 
 		goto Usermenu;
 	}
@@ -162,11 +179,15 @@ Usermenu:
 		//rewrites user file to the file is updated based on what the user has added or deleted
 		goto Usermenu;
 	}
+	else if (strcmp(option, "modify")) {
+		//User can modify their file and change date obtained and/or version of movie
+		goto Usermenu;
+	}
 	else if (strcmp(option, "preview") == 0) {
 		//prints user's database to standard output so he/she can review it before updating
 		goto Usermenu;
 	}
-	else if (strcmp(option, "sort") == 0) {
+	else if (strcmp(option, "download") == 0) {
 		//sorts users database by title using some sort of sorting algorithm that is efficient
 		goto Usermenu;
 	}
@@ -176,6 +197,6 @@ Usermenu:
 	}
 
 
-End:
+End:*/
 	return 0;
 }

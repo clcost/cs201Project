@@ -1,7 +1,7 @@
 #include "database.h"
 //add movie from database file into local memory doubly linked list
 struct BST_Movies * insertToMovieBST(struct BST_Movies *rootptr, char uniqueId[], char titleType[], char primTitle[], char origTitle[], char adultFilm[], char startYear[], char endYear[], char runTime[], char genre[]) {
-	printf("begin function\n");
+
 	struct BST_Movies *new = (struct BST_Movies*) malloc (sizeof(struct BST_Movies));
 	new->parent = (struct BST_Movies*) malloc (sizeof(struct BST_Movies));
 	new->left = (struct BST_Movies*) malloc (sizeof(struct BST_Movies));
@@ -27,12 +27,9 @@ struct BST_Movies * insertToMovieBST(struct BST_Movies *rootptr, char uniqueId[]
 	
 	strcpy(newTitleWOATheAnd, &temp);
 
-	printf("flag 1\n");
-
 	//If rootptr is NULL
 	if (rootptr == NULL) {
 		rootptr = new;
-		printf("Movie is placed root\n");
 	}
 	//else put movie in correct position in BST
 	else {
@@ -51,21 +48,17 @@ struct BST_Movies * insertToMovieBST(struct BST_Movies *rootptr, char uniqueId[]
 
 			for (i = 0; i < endOfTitle; i = i + 1) {
 				char currTreeChar = currentTitleWOATheAnd[i];
-				printf("%c\n", currTreeChar);
 				char currnewChar = newTitleWOATheAnd[i];
-				printf("%c\n", currnewChar);
 
 				if (currTreeChar > currnewChar) {
 					if (currentMovie->left == NULL) {
 						currentMovie->left = new;
 						new->parent = currentMovie;
 						notPlaced = 0;
-						printf("Movie is placed left\n");
 						break;
 					}
 					else {
 						currentMovie = currentMovie->left;
-						printf("flag 2\n");
 						break;
 					}
 				}
@@ -75,12 +68,10 @@ struct BST_Movies * insertToMovieBST(struct BST_Movies *rootptr, char uniqueId[]
 						currentMovie->right = new;
 						new->parent = currentMovie;
 						notPlaced = 0;
-						printf("Movie is placed right\n");
 						break;
 					}
 					else {
 						currentMovie = currentMovie->right;
-						printf("flag 3\n");
 						break;
 					}
 				}
@@ -91,17 +82,14 @@ struct BST_Movies * insertToMovieBST(struct BST_Movies *rootptr, char uniqueId[]
 					currentMovie->right = new;
 					new->parent = currentMovie;
 					notPlaced = 0;
-					printf("Movie is placed right\n");
 					break;
 				}
 				else {
 					currentMovie = currentMovie->right;
-					printf("flag 4\n");
 				}
 			}
 		}
 	}
-	printf("end of function\n");
 	return rootptr;
 }
 	
@@ -158,7 +146,6 @@ const char * titleWithoutATheAnd(char temp[]) {
 		strcpy(result, temp);
 		
 	}
-	printf("%s\n", result);
 	return *result;
 }
 
@@ -193,9 +180,9 @@ struct BST_Movies * searchIMDb(struct BST_Movies *currentPtr, char searchTitle[]
 }
 
 void printMainMenu() {
-	printf("==========Main Menu==========\n\n");
+	printf("==============================Main Menu==============================\n");
 	printf("Options\t\tDescription\n");
-	printf("_____________________________\n\n");
+	printf("_____________________________________________________________________\n\n");
 	printf("Create\t\tCreate a new database for yourself\n");
 	printf("Login\t\tIf you already have a database log back in to load it\n");
 	printf("Quit\t\tExit out of program\n");
