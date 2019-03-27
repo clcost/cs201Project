@@ -154,25 +154,35 @@ struct BST_Movies * searchIMDb(struct BST_Movies *currentPtr, char searchTitle[]
 			return NULL;
 		}
 
-		else if (currentPtr->primTitle[0] > searchTitle[0]) {
-			searchIMDb(currentPtr->left, searchTitle);
+		char tempTitle[500];
+		const char *temp = titleWithoutATheAnd(currentPtr->primTitle);
+		strcpy(tempTitle, &temp);
+		char searchWOATA[500];
+		temp = titleWithoutATheAnd(searchTitle);
+		strcpy(searchWOATA, &temp);
+
+		if (tempTitle[0] > searchWOATA[0]) {
+			return searchIMDb(currentPtr->left, searchTitle);
 		}
-		else if (currentPtr->primTitle[0] == searchTitle[0]) {
-			int searchTitleLength = strlen(searchTitle);
+		else if (tempTitle[0] == searchWOATA[0]) {
+			int searchTitleLength = strlen(searchWOATA);
 			int found = 0;
 			for (int i = 1; i < searchTitleLength; i = i + 1) {
-				if (currentPtr->primTitle[i] > searchTitle[i]) {
-					searchIMDb(currentPtr->left, searchTitle);
+				if (tempTitle[i] > searchWOATA[i]) {
+					return searchIMDb(currentPtr->left, searchTitle);
 				}
-				else if (currentPtr->primTitle[i] < searchTitle[i]) {
-					searchIMDb(currentPtr->right, searchTitle);
+				else if (tempTitle[i] < searchWOATA[i]) {
+					return searchIMDb(currentPtr->right, searchTitle);
 				}
 			}
 			//if here, title has been found
-			return currentPtr;
+			if (strcmp(currentPtr->primTitle, searchTitle) == 0) {
+				//return currentPtr;
+				return currentPtr;
+			}
 		}
-		else if (currentPtr->primTitle[0] < searchTitle[0]) {
-			searchIMDb(currentPtr->right, searchTitle);
+		else if (tempTitle[0] < searchWOATA[0]) {
+			return searchIMDb(currentPtr->right, searchTitle);
 		}
 		//If movie not found, return NULL
 		return NULL;

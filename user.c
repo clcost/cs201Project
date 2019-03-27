@@ -44,6 +44,42 @@ void printUserMenu() {
 	return;
 }
 
+struct user * findUser(struct user **firstUser, char userName[]) {
+	struct user *currentUser = (struct user*) malloc (sizeof(struct user));
+	currentUser->topOfUsersMovieTree = (struct user*) malloc (sizeof(struct user));
+	currentUser->next = (struct user*) malloc (sizeof(struct user));
+	currentUser->prev = (struct user*) malloc (sizeof(struct user));
+
+	currentUser = *firstUser;
+
+	int nameFound = -1;
+
+	if (strcmp(userName, currentUser->userName) == 0) {
+		nameFound = 0;
+	}
+
+	while (nameFound == -1 && currentUser->next != NULL) {
+		if (strcmp(userName, currentUser->userName) == 0) {
+			nameFound = 0;
+			break;
+		}
+		currentUser = currentUser->next;
+	}
+
+	if (strcmp(userName, currentUser->userName) == 0) {
+		nameFound = 0;
+	}
+
+	if (nameFound != -1) {
+		return currentUser;
+	}
+	
+	else {
+		printf("User could not be found. Returning to Main Menu.\n");
+		return NULL;
+	}
+}
+
 void createUser(struct user **firstUser, char userName[]) {
 	struct user *new = (struct user*) malloc (sizeof(struct user));
 	strcpy(new->userName, userName);
@@ -143,16 +179,21 @@ void deleteUser(struct user **firstUser, char userName[]) {
 	}
 }
 
-void printUserList(struct user *firstUser) {
-	if (firstUser == NULL) {
+void printUserList(struct user **firstUser) {
+	if (*firstUser == NULL) {
 		printf("No users exist.\n");
 		return;
 	}
+	struct user *currentUser = (struct user*) malloc (sizeof(struct user));
+	currentUser->next = (struct user*) malloc (sizeof(struct user));
+	currentUser->prev = (struct user*) malloc (sizeof(struct user));
+	currentUser = *firstUser;
+
 	printf("Beginning of User List: ");
-	printf("%s ", firstUser->userName);
-	while (firstUser->next != NULL) {
-		firstUser = firstUser->next;
-		printf("%s ", firstUser->userName);
+	printf("%s ", currentUser->userName);
+	while (currentUser->next != NULL) {
+		currentUser = currentUser->next;
+		printf("%s ", currentUser->userName);
 	}
 	printf("\n");
 
