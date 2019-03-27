@@ -1,6 +1,5 @@
 //main.c
 #include "user.h"
-#include "database.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -24,9 +23,6 @@ int main (void) {
 	struct user *PointerToFirstUser = (struct user*) malloc (sizeof(struct user));
 	PointerToFirstUser = NULL;
 
-	BST_MOVIES *parent = NULL;
-	BST_MOVIES *left = NULL;
-	BST_MOVIES *right = NULL;
 	BST_MOVIES *topOfTree = NULL;
 	
 	FILE *fp = fopen("movie_records_sample", "r");
@@ -89,6 +85,7 @@ int main (void) {
 	printf("IMDb database created. Loading successful!\n\n");
 	printf("Welcome to your customizable IMDb movie database!\n\n");
 	printf("In this program you are able search through IMDb's movies and create your own unique database.\n\n");
+	
 	char userName1[100];
 	while (1) { //while quit is not entered, the function keeps asking for names to be added to list
 		printf("Add a username: ");
@@ -101,6 +98,7 @@ int main (void) {
 	scanf("%s", userName1);
 	deleteUser(&PointerToFirstUser, userName1);
 	printUserList(PointerToFirstUser); //prints the list after delete
+	
 	/*printf("Enter movie to search for:\n");
 	char searchTitle[500];
 	scanf("%s", searchTitle);
@@ -114,12 +112,12 @@ int main (void) {
 		printf("Movie found.\n");
 		printf("%s\t%s\t%s\n", returnedSearch->primTitle, returnedSearch->origTitle, returnedSearch->startYear);
 	}*/
-/*
+
 Mainmenu:
 	printMainMenu();
 
 	char option[10];
-	scanf("%s", option);
+	scanf("%10s", option);
 	i = 0;
 	while (option[i]) {					//makes option all lowercase for ease of reading
 		option[i] = tolower(option[i]);
@@ -137,13 +135,16 @@ Mainmenu:
 		char userName[100];
 		printf("New User Creation: What is your name? (Please use first name and max is 100 characters)\n");
 		scanf("%s", userName);
-		createUser(PointerToFirstUser, userName);
+		createUser(&PointerToFirstUser, userName);
 		printf("Welcome %s to the User Menu!\n", userName);
 
 		goto Usermenu;
 	}
 	else if(strcmp(option, "login") == 0) {
 		//login with existing user and jump to user menu
+		printf("Please select an existing user: ");
+		printUserList(&PointerToFirstUser);
+
 		goto Usermenu;
 	}
 	else {
@@ -164,11 +165,25 @@ Usermenu:
 		goto Mainmenu;
 	}
 	else if (strcmp(option, "search") == 0) {
-			//search IMDb database and print results for user to look at
-			goto Usermenu;
+		//search IMDb database and print results for user to look at
+		char titleName[500];
+		struct BST_Movies *foundMoviePtr = (struct BST_Movies*) malloc (sizeof(struct BST_Movies)); 
+		printf("Please enter exact movie title to search for (titles are case-sensitive): ");
+		scanf("%[^\n]", titleName);
+		foundMoviePtr = searchIMDb(topOfTree, titleName);
+		if (foundMoviePtr == NULL) {
+			printf("Movie does not exist in the IMDb. Returning to User Menu.\n\n");
+		}
+		else {
+			printf("Movie found below:\n");
+			printList(foundMoviePtr);
+		}
+
+		goto Usermenu;
 	}
 	else if (strcmp(option, "add") == 0) {
 		//add certain movie to user database
+
 		goto Usermenu;
 	}
 	else if (strcmp(option, "delete") == 0) {
@@ -197,6 +212,6 @@ Usermenu:
 	}
 
 
-End:*/
+End:
 	return 0;
 }

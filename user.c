@@ -105,6 +105,11 @@ void deleteUser(struct user **firstUser, char userName[]) {
 		currentUser = currentUser->next;
 	}
 
+	//check last user if name is still not found
+	if (strcmp(userName, currentUser->userName) == 0) {
+		nameFound = 0;
+	}
+
 	if (nameFound != -1) {
 	
 		//we have found user
@@ -117,10 +122,12 @@ void deleteUser(struct user **firstUser, char userName[]) {
 			else {
 				*firstUser = NULL;
 			}
+			free(currentUser);
 		}
 		else if (currentUser->next == NULL) {
 			currentUser->prev->next = NULL;
 			currentUser->prev = NULL;
+			free(currentUser);
 		}
 
 		else {
@@ -128,30 +135,92 @@ void deleteUser(struct user **firstUser, char userName[]) {
 			currentUser->prev->next = currentUser->next;
 			//set the prev attribute of the next user, to our found user's prev attribute
 			currentUser->next->prev = currentUser->prev;
+			free(currentUser);
 		}
 	}
 	else {
 		printf("User to delete does not exist.\n");
 	}
-
-	free(currentUser);
 }
 
 void printUserList(struct user *firstUser) {
-	printf("Beginning of list\n");
 	if (firstUser == NULL) {
 		printf("No users exist.\n");
 		return;
 	}
-	printf("%s\n", firstUser->userName);
+	printf("Beginning of User List: ");
+	printf("%s ", firstUser->userName);
 	while (firstUser->next != NULL) {
 		firstUser = firstUser->next;
-		printf("%s\n", firstUser->userName);
+		printf("%s ", firstUser->userName);
 	}
+	printf("\n");
+
 }
 
 void deletefromUserDB(struct user * rootPtr, char movieTitle[]) {
+	if (rootPtr == NULL) {
+		printf("User's database is empty.\n");
+		return;
+	}
 
+	struct BST_Movies *deletePtr = (struct BST_Movies*) malloc (sizeof(struct BST_Movies));
+	deletePtr = searchIMDb(rootPtr->topOfUsersMovieTree, movieTitle);
+	
+	if (deletePtr == NULL) {
+		printf("Movie was not found; therefor, nothing to delete.\n");
+		return;
+	}
+
+	struct BST_Movies *newRoot = (struct BST_Movies*) malloc (sizeof(struct BST_Movies));
+	newRoot = recursiveDeleteUserDB(rootPtr, movieTitle);
+	
+
+}
+
+struct BST_Movies * recursiveDeleteUserDB(struct BST_Movies *rootPtr, char movieTitle[]) {
+	struct BST_Movies *deletePtr = (struct BST_Movies*) malloc (sizeof(struct BST_Movies));
+	deletePtr->right = (struct BST_Movies*) malloc (sizeof(struct BST_Movies));
+	deletePtr->left = (struct BST_Movies*) malloc (sizeof(struct BST_Movies));
+	deletePtr->parent = (struct BST_Movies*) malloc (sizeof(struct BST_Movies));
+	deletePtr = searchIMDb(rootPtr, movieTitle);
+
+	if (deletePtr != NULL) {
+		//check if movie has only one child or no child
+		if (deletePtr->left == NULL) {
+			struct BST_Movies *temp = (struct BST_Movies*) malloc (sizeof(struct BST_Movies));
+			temp = deletePtr->right;
+			free(deletePtr);
+			return temp;
+		}
+
+		else if (deletePtr->right == NULL) {
+			struct BST_Movies *temp = (struct BST_Movies*) malloc (sizeof(struct BST_Movies));
+			temp = deletePtr->left;
+			free(deletePtr);
+			return temp;
+		}
+
+		//movie with two children
+		//get inorder successor
+		struct BST_Movies *temp = (struct BST_Movies*) malloc (sizeof(struct BST_Movies));
+		temp = minMovieVal(deletePtr->right);
+		
+		deletePtr->parent = temp;
+
+		recursiveDeleteUserDB(deletePtr->right, temp->primTitle);
+	}
+}
+
+struct BST_Movies * minMovieVal(struct BST_Movies *ptr) {
+	struct BST_Movies *currentPtr = (struct BST_Movies*) malloc (sizeof(struct BST_Movies));
+	currentPtr = ptr;
+
+	while (currentPtr->left != NULL) {
+		currentPtr = currentPtr->left;
+	}
+
+	return currentPtr;
 }
 
 void modifyUserDB(struct user * rootPtr, char movieTitle[]) {
@@ -159,9 +228,16 @@ void modifyUserDB(struct user * rootPtr, char movieTitle[]) {
 }
 
 void previewUserDB(struct user * rootPtr) {
-
+	printList(rootPtr);
 }
 
 void downloadUserFile(struct user * rootPtr, char userName[]) {
+	if (rootPtr == NULL) {
+		printf("User's database is empty, nothing to download.\n\n");
+	}
 
+	//strcat(userName, ".log");
+	//FILE *fp = fopen(userName, "w");
+
+	//fprintf(fp, printList(rootPtr));
 }
