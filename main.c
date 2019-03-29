@@ -203,9 +203,9 @@ YN:
 
 				printf("Movie was added to your personal database!\n");
 				printf("After adding a new movie, your new database is show below: (Alphabetical Order)\n\n");
-				printf("Primary Title\tOriginal Title\tRun Time\tGenre\tYear\tMedia Type\tDate Obtained\n\n");
+				printf("Primary Title\tOriginal Title\tRun Time\tGenre\tYear\tMedia Type\tDate Obtained\n");
 				previewUserDB(PointerToUser->topOfUsersMovieTree);
-				printf("Returning to User Menu.\n\n");
+				printf("\nReturning to User Menu.\n\n");
 			}	
 		}
 
@@ -262,7 +262,7 @@ YN2:
 				printf("After deletion, here is your new database:\n\n");
 				printf("Primary Title\tOriginal Title\tRun Time\tGenre\tYear\tMedia Type\tDate Obtained\n");
 				previewUserDB(PointerToUser->topOfUsersMovieTree);
-				printf("Returning to User Menu.\n\n");
+				printf("\nReturning to User Menu.\n\n");
 			}
 		}
 
@@ -296,7 +296,7 @@ YN2:
 		//Movie found
 		else {
 			printf("The movie you wish to modify is shown below:\n\n");
-			printf("%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n", foundMoviePtr->primTitle, foundMoviePtr->origTitle, foundMoviePtr->adultFilm, foundMoviePtr->startYear, foundMoviePtr->runTime, foundMoviePtr->genre, foundMoviePtr->startYear, foundMoviePtr->dateAdded, foundMoviePtr->mediaType);
+			printf("%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n\n", foundMoviePtr->primTitle, foundMoviePtr->origTitle, foundMoviePtr->adultFilm, foundMoviePtr->startYear, foundMoviePtr->runTime, foundMoviePtr->genre, foundMoviePtr->startYear, foundMoviePtr->dateAdded, foundMoviePtr->mediaType);
 YN3:
 			printf("Is this the movie you wish to modify in your database? (Yes or No)\n");
 			scanf("%4s", choiceYN);
@@ -328,9 +328,9 @@ YN3:
 				modifyUserDB(foundMoviePtr, newDateAdded, newMediaType);
 				printf("Movie has been modified\n");
 				printf("After modification, here is your new database:\n\n");
-				printf("Primary Title\tOriginal Title\tRun Time\tGenre\tYear\tMedia Type\tDate Obtained\n\n");
+				printf("Primary Title\tOriginal Title\tRun Time\tGenre\tYear\tMedia Type\tDate Obtained\n");
 				previewUserDB(PointerToUser->topOfUsersMovieTree);
-				printf("Returning to User Menu.\n\n");
+				printf("\nReturning to User Menu.\n\n");
 			}
 		}
 				
@@ -339,9 +339,9 @@ YN3:
 	else if (strcmp(option, "preview") == 0) {
 		//prints user's database to standard output so he/she can review it before updating
 		printf("%s's custom movie database below: (Alphabetical Order)\n\n", PointerToUser->userName);
-		printf("Primary Title\tOriginal Title\tRun Time\tGenre\tYear\tMedia Type\tDate Obtained\n\n");
+		printf("Primary Title\tOriginal Title\tRun Time\tGenre\tYear\tMedia Type\tDate Obtained\n");
 		previewUserDB(PointerToUser->topOfUsersMovieTree);
-		printf("Returning to User Menu.\n\n");
+		printf("\nReturning to User Menu.\n\n");
 		goto Usermenu;
 	}
 	else if (strcmp(option, "download") == 0) {

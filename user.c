@@ -1,28 +1,8 @@
 #include "user.h"
 //Function for adding to user's BST
 struct BST_Movies * addToUserDB (struct user *pointerToUser, char uniqueId[], char titleType[], char primTitle[], char origTitle[], char adultFilm[], char startYear[], char endYear[], char runTime[], char genre[], char dateAdded[], char mediaType[]) {
-	printf("Start of addToUserDB\n");
-	int movieSearchResult = -1;
-
-	//if movie is found print message saying it exists already
-	if (movieSearchResult == 0) {
-		printf("Movie is already in user database.\n");
-	}
-	
-	else if (movieSearchResult == -1) {
-		
-		if (pointerToUser == NULL) {
-		//Calls insertToMovieBST function and returns the root for the tree to user's struct
-		return insertToMovieBST(pointerToUser->topOfUsersMovieTree, uniqueId, titleType, primTitle, origTitle, adultFilm, startYear, endYear, runTime, genre, dateAdded, mediaType);
-
-		}
-	}
-
-	else {
-		printf("There is logical issue with the function findMovie()\n returned %d", movieSearchResult);
-	}
-
-	return pointerToUser->topOfUsersMovieTree;
+	//User insertToMovieBST to insert to user database
+	return insertToMovieBST(pointerToUser->topOfUsersMovieTree, uniqueId, titleType, primTitle, origTitle, adultFilm, startYear, endYear, runTime, genre, dateAdded, mediaType);
 
 }
 
