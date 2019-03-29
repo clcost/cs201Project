@@ -1,13 +1,8 @@
 #include "user.h"
-int findMovie() {
-	
-	return -1;
-
-}
-
+//Function for adding to user's BST
 struct BST_Movies * addToUserDB (struct user *pointerToUser, char uniqueId[], char titleType[], char primTitle[], char origTitle[], char adultFilm[], char startYear[], char endYear[], char runTime[], char genre[], char dateAdded[], char mediaType[]) {
 	printf("Start of addToUserDB\n");
-	int movieSearchResult = findMovie();
+	int movieSearchResult = -1;
 
 	//if movie is found print message saying it exists already
 	if (movieSearchResult == 0) {
@@ -15,17 +10,12 @@ struct BST_Movies * addToUserDB (struct user *pointerToUser, char uniqueId[], ch
 	}
 	
 	else if (movieSearchResult == -1) {
-		printf("Else if addToUserDB\n");
 		
-		if (pointerToUser == NULL) printf("User's tree ptr is NULL here\n");
-		//struct user *tempToUser = (struct user*) malloc (sizeof(struct user));
-		//empToUser->topOfUsersMovieTree = (struct BST_Movies*) malloc (sizeof(struct BST_Movies));
-		//tempToUser->topOfUsersMovieTree = pointerToUser->topOfUsersMovieTree;
-		
-		printf("right before insertBST call\n");
-
+		if (pointerToUser == NULL) {
+		//Calls insertToMovieBST function and returns the root for the tree to user's struct
 		return insertToMovieBST(pointerToUser->topOfUsersMovieTree, uniqueId, titleType, primTitle, origTitle, adultFilm, startYear, endYear, runTime, genre, dateAdded, mediaType);
 
+		}
 	}
 
 	else {
@@ -36,6 +26,7 @@ struct BST_Movies * addToUserDB (struct user *pointerToUser, char uniqueId[], ch
 
 }
 
+//Function prints the user menu to standard output
 void printUserMenu() {
 	printf("==============================User Menu==============================\n");
 	printf("Options\t\tDescription\n");
@@ -53,14 +44,16 @@ void printUserMenu() {
 	return;
 }
 
+//Function finds user in order to login
 struct user * findUser(struct user **firstUser, char userName[]) {
+	//Pointer to the user the function is looking at
 	struct user *currentUser = (struct user*) malloc (sizeof(struct user));
 	currentUser->topOfUsersMovieTree = (struct BST_Movies*) malloc (sizeof(struct BST_Movies));
 	currentUser->next = (struct user*) malloc (sizeof(struct user));
 	currentUser->prev = (struct user*) malloc (sizeof(struct user));
 
 	currentUser = *firstUser;
-
+	//When nameFound == 0, funcion has found the user we were looking for
 	int nameFound = -1;
 
 	if (strcmp(userName, currentUser->userName) == 0) {
@@ -82,14 +75,16 @@ struct user * findUser(struct user **firstUser, char userName[]) {
 	if (nameFound != -1) {
 		return currentUser;
 	}
-	
+	//If we are here, then user was not found
 	else {
 		printf("User could not be found. Returning to Main Menu.\n");
 		return NULL;
 	}
 }
 
+//Function creates new user
 void createUser(struct user **firstUser, char userName[]) {
+	//Allocate memory for the new user structure
 	struct user *new = (struct user*) malloc (sizeof(struct user));
 	strcpy(new->userName, userName);
 	new->topOfUsersMovieTree = (struct BST_Movies*) malloc (sizeof(struct BST_Movies));
@@ -99,17 +94,14 @@ void createUser(struct user **firstUser, char userName[]) {
 	new->topOfUsersMovieTree = NULL;
 	new->next = NULL;
 	new->prev = NULL;
-
+	//If this is our first user then make the first user ptr == the new user
 	if (*firstUser == NULL) {
 		*firstUser = new;
 	}
 	else {
 		//set the prev attribute of our new user to last user in list
-
 		//let the next attribute of our new user stay NULL
-
 		//set the next attribute of the last user in the list to the new user
-		//int foundUser = -1;
 		struct user *currentUser = (struct user*) malloc (sizeof(struct user));
 		currentUser->next = (struct user*) malloc (sizeof(struct user));
 		currentUser->prev = (struct user*) malloc (sizeof(struct user));
@@ -124,6 +116,7 @@ void createUser(struct user **firstUser, char userName[]) {
 	}
 }
 
+//Function deletes a user account
 void deleteUser(struct user **firstUser, char userName[]) {
 	if (*firstUser == NULL) {
 		printf("There are no users to delete.\n");
@@ -188,11 +181,14 @@ void deleteUser(struct user **firstUser, char userName[]) {
 	}
 }
 
+//Prints the user accounts to standard output
 void printUserList(struct user **firstUser) {
+	//If no users exist
 	if (*firstUser == NULL) {
 		printf("No users exist.\n");
 		return;
 	}
+	//Create pointer for thet user we are looking at in memory
 	struct user *currentUser = (struct user*) malloc (sizeof(struct user));
 	currentUser->next = (struct user*) malloc (sizeof(struct user));
 	currentUser->prev = (struct user*) malloc (sizeof(struct user));
@@ -208,6 +204,7 @@ void printUserList(struct user **firstUser) {
 
 }
 
+//Delete from User's BST database
 void deletefromUserDB(struct user * rootPtr, char movieTitle[]) {
 	if (rootPtr == NULL) {
 		printf("User's database is empty.\n");
@@ -221,7 +218,8 @@ void deletefromUserDB(struct user * rootPtr, char movieTitle[]) {
 		printf("Movie was not found; therefor, nothing to delete.\n");
 		return;
 	}
-
+	
+	//Call recursive delete function in order to keep tree maintained
 	struct BST_Movies *newRoot = (struct BST_Movies*) malloc (sizeof(struct BST_Movies));
 	newRoot = recursiveDeleteUserDB(rootPtr->topOfUsersMovieTree, movieTitle);
 	//set user's new topOfMovieTree
@@ -230,13 +228,15 @@ void deletefromUserDB(struct user * rootPtr, char movieTitle[]) {
 
 }
 
+//Called by function above and maintains tree order when a node is deleted
 struct BST_Movies * recursiveDeleteUserDB(struct BST_Movies *rootPtr, char movieTitle[]) {
+	//DeletePtr traverses through tree for the delete node
 	struct BST_Movies *deletePtr = (struct BST_Movies*) malloc (sizeof(struct BST_Movies));
 	deletePtr->right = (struct BST_Movies*) malloc (sizeof(struct BST_Movies));
 	deletePtr->left = (struct BST_Movies*) malloc (sizeof(struct BST_Movies));
 	deletePtr->parent = (struct BST_Movies*) malloc (sizeof(struct BST_Movies));
 
-	//deletePtr = searchIMDb(rootPtr, movieTitle);
+	//if tree is empty
 	if (rootPtr == NULL) {
 		return rootPtr;
 	}
@@ -286,6 +286,7 @@ struct BST_Movies * recursiveDeleteUserDB(struct BST_Movies *rootPtr, char movie
 	return rootPtr;
 }
 
+//Function returns the successor to a node
 struct BST_Movies * minMovieVal(struct BST_Movies *ptr) {
 	struct BST_Movies *currentPtr = (struct BST_Movies*) malloc (sizeof(struct BST_Movies));
 	currentPtr = ptr;
@@ -297,26 +298,43 @@ struct BST_Movies * minMovieVal(struct BST_Movies *ptr) {
 	return currentPtr;
 }
 
-void modifyUserDB(struct user * rootPtr, char movieTitle[], char newDateAdded[], char newMediaType[]) {
-	struct BST_Movies *currentPtr = (struct BST_Movies*) malloc (sizeof(struct BST_Movies));
-	currentPtr = rootPtr->topOfUsersMovieTree;
-	currentPtr = searchIMDb(currentPtr, movieTitle);
+//Function modifies a movie node in a user's database
+void modifyUserDB(struct BST_Movies *rootPtr, char newDateAdded[], char newMediaType[]) {
+	if (rootPtr == NULL) {
+		return;
+	}
+	
+	//Update dat and type for the desired new variables
+	strcpy(rootPtr->dateAdded, newDateAdded);
+	strcpy(rootPtr->mediaType, newMediaType);
+}
 
-	if (currentPtr == NULL) {
+//Prints user's database to standard output
+void previewUserDB(struct BST_Movies *rootPtr) {
+	if (rootPtr == NULL) {
 		return;
 	}
 
-	strcpy(currentPtr->dateAdded, newDateAdded);
-	strcpy(currentPtr->mediaType, newMediaType);
+	previewUserDB(rootPtr->left);
+
+	printf("%s\t%s\t%s\t%s\t%s\t%s\t%s\n", rootPtr->primTitle, rootPtr->origTitle, rootPtr->runTime, rootPtr->genre, rootPtr->startYear, rootPtr->mediaType, rootPtr->dateAdded);
+
+	previewUserDB(rootPtr->right);
+
+	return;
 }
 
-void downloadUserFile(struct user * rootPtr, char userName[]) {
+//Prints user's database to a file
+void downloadUserFile(struct BST_Movies *rootPtr, FILE *fp) {
 	if (rootPtr == NULL) {
-		printf("User's database is empty, nothing to download.\n\n");
+		return;
 	}
 
-	//strcat(userName, ".log");
-	//FILE *fp = fopen(userName, "w");
+	downloadUserFile(rootPtr->left, fp);
 
-	//fprintf(fp, printList(rootPtr));
+	fprintf(fp, "%s\t%s\t%s\t%s\t%s\t%s\t%s\t\n", rootPtr->primTitle, rootPtr->origTitle, rootPtr->runTime, rootPtr->genre, rootPtr->startYear, rootPtr->mediaType, rootPtr->dateAdded);
+
+	downloadUserFile(rootPtr->right, fp);
+
+	return;
 }

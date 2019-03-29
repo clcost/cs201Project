@@ -1,11 +1,11 @@
-//user.h
+//user.h Written by Coleman Cost CS201
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
 #include <stdlib.h>
 #include "database.h"
-//in the user database we only need title, genre, runTime, and year released
-//then the user will input if they own it on dvd bluray or digital and the date they obtained the movie through std input
+
+//Node for users
 typedef struct user {
 	char userName[100];
 
@@ -23,8 +23,7 @@ struct BST_Movies * addToUserDB(struct user *, char[], char[], char[], char[], c
 void deletefromUserDB(struct user *, char[]); //remove movie from user's DB
 struct BST_Movies * recursiveDeleteUserDB(struct BST_Movies *, char[]); //recursive function for delete
 struct BST_Movies * minMovieVal(struct BST_Movies *); //returns movie's successor
-void modifyUserDB(struct user *, char[], char[], char[]); //user can modify the date added and/or the type of copy they have
-//void previewUserDB(struct user  *); //prints user's DB to standard output
-void downloadUserFile(struct user *, char[]); //prints user's DB to a file
-int findMovie(); //looks for specific movie in user's movie database; returns 0 if found, -1 if not;
-void printUserList(struct user **);
+void modifyUserDB(struct BST_Movies *, char[], char[]); //user can modify the date added and/or the type of copy they have
+void previewUserDB(struct BST_Movies  *); //prints user's DB to standard output
+void downloadUserFile(struct BST_Movies *, FILE *); //prints user's DB to a file
+void printUserList(struct user **); //prints username list
