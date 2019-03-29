@@ -1,6 +1,6 @@
 #include "database.h"
 //add movie from database file into local memory doubly linked list
-struct BST_Movies * insertToMovieBST(struct BST_Movies *rootptr, char uniqueId[], char titleType[], char primTitle[], char origTitle[], char adultFilm[], char startYear[], char endYear[], char runTime[], char genre[]) {
+struct BST_Movies * insertToMovieBST(struct BST_Movies *rootptr, char uniqueId[], char titleType[], char primTitle[], char origTitle[], char adultFilm[], char startYear[], char endYear[], char runTime[], char genre[], char dateAdded[], char mediaType[]) {
 
 	struct BST_Movies *new = (struct BST_Movies*) malloc (sizeof(struct BST_Movies));
 	new->parent = (struct BST_Movies*) malloc (sizeof(struct BST_Movies));
@@ -16,16 +16,18 @@ struct BST_Movies * insertToMovieBST(struct BST_Movies *rootptr, char uniqueId[]
 	strcpy(new->endYear, endYear);
 	strcpy(new->runTime, runTime);
 	strcpy(new->genre, genre);
+	strcpy(new->dateAdded, dateAdded);
+	strcpy(new->mediaType, mediaType);
 
 	new->left = NULL;
 	new->right = NULL;
 	new->parent = NULL;
+	printf("flag 1 in database.c\n");
+	//char newTitleWOATheAnd[500];
+	//char currentTitleWOATheAnd[500]; 
+	//const char *temp = titleWithoutATheAnd(primTitle);
 	
-	char newTitleWOATheAnd[500];
-	char currentTitleWOATheAnd[500]; 
-	const char *temp = titleWithoutATheAnd(primTitle);
-	
-	strcpy(newTitleWOATheAnd, &temp);
+	//strcpy(newTitleWOATheAnd, &temp);
 
 	//If rootptr is NULL
 	if (rootptr == NULL) {
@@ -33,22 +35,26 @@ struct BST_Movies * insertToMovieBST(struct BST_Movies *rootptr, char uniqueId[]
 	}
 	//else put movie in correct position in BST
 	else {
+		printf("flag 2 in database.c\n");
 		struct BST_Movies *currentMovie = (struct BST_Movies*) malloc (sizeof(struct BST_Movies));
 		currentMovie->right = (struct BST_Movies*) malloc (sizeof(struct BST_Movies));
 		currentMovie->left = (struct BST_Movies*) malloc (sizeof(struct BST_Movies));
 		currentMovie = rootptr;
 		int i = 0;
-		int endOfTitle = strlen(newTitleWOATheAnd);
+		int endOfTitle = strlen(primTitle);
 		int notPlaced = -1;
 			
 		while (notPlaced == -1) {
-			char currentTitleWOATheAnd[500];
-			temp = titleWithoutATheAnd(currentMovie->primTitle);
-		        strcpy(currentTitleWOATheAnd, &temp);
+			//char currentTitleWOATheAnd[500];
+			//temp = titleWithoutATheAnd(currentMovie->primTitle);
+		        //strcpy(currentTitleWOATheAnd, &temp);
 
 			for (i = 0; i < endOfTitle; i = i + 1) {
-				char currTreeChar = currentTitleWOATheAnd[i];
-				char currnewChar = newTitleWOATheAnd[i];
+				//char currTreeChar = currentTitleWOATheAnd[i];
+				//char currnewChar = newTitleWOATheAnd[i];
+				char currTreeChar = currentMovie->primTitle[i];
+				char currnewChar = primTitle[i];
+				
 
 				if (currTreeChar > currnewChar) {
 					if (currentMovie->left == NULL) {
@@ -94,7 +100,7 @@ struct BST_Movies * insertToMovieBST(struct BST_Movies *rootptr, char uniqueId[]
 }
 	
 void printList(struct BST_Movies *start) {
-	struct BST_Movies *current = start;
+	//struct BST_Movies *current = start;
 	if (start == NULL) {
 		return;
 	}
@@ -108,7 +114,8 @@ void printList(struct BST_Movies *start) {
 	return;
 }
 
-const char * titleWithoutATheAnd(char temp[]) {
+char * titleWithoutATheAnd(char temp[]) {
+	char *resultPtr;
 	char result[500];
 	char firstFour[4];
 	int newIndex = 0;
@@ -119,14 +126,14 @@ const char * titleWithoutATheAnd(char temp[]) {
 	firstFour[3] = temp[3];
 
 	if (firstFour[0] == 'T' && firstFour[1] == 'h' && firstFour[2] == 'e' && firstFour[3] == ' ') {
-		for (int i = 4; i <= strlen(temp); i = i + 1) {
+		for (int i = 4; i < strlen(temp); i = i + 1) {
 			newIndex = i - 4;
 			oldIndex = i;
 			result[newIndex] = temp[oldIndex];
 		}
 	}
 	else if (firstFour[0] == 'A' && firstFour[1] == 'n' && firstFour[2] == 'd' && firstFour[3] == ' ') {
-		for (int i = 4; i <= strlen(temp); i = i + 1) {
+		for (int i = 4; i < strlen(temp); i = i + 1) {
 				newIndex = i - 4;
 				oldIndex = i;
 				result[newIndex] = temp[oldIndex];
@@ -134,7 +141,7 @@ const char * titleWithoutATheAnd(char temp[]) {
 	}
 
 	else if (firstFour[0] == 'A' && firstFour[1] == ' ') {
-		for (int i = 2; i <= strlen(temp); i = i + 1) {
+		for (int i = 2; i < strlen(temp); i = i + 1) {
 			newIndex = i - 2;
 			oldIndex = i;
 			result[newIndex] = temp[oldIndex];
@@ -146,7 +153,8 @@ const char * titleWithoutATheAnd(char temp[]) {
 		strcpy(result, temp);
 		
 	}
-	return *result;
+	resultPtr = result;
+	return resultPtr;
 }
 
 struct BST_Movies * searchIMDb(struct BST_Movies *currentPtr, char searchTitle[]) {
@@ -154,24 +162,23 @@ struct BST_Movies * searchIMDb(struct BST_Movies *currentPtr, char searchTitle[]
 			return NULL;
 		}
 
-		char tempTitle[500];
-		const char *temp = titleWithoutATheAnd(currentPtr->primTitle);
-		strcpy(tempTitle, &temp);
-		char searchWOATA[500];
-		temp = titleWithoutATheAnd(searchTitle);
-		strcpy(searchWOATA, &temp);
+		//char tempTitle[500];
+		//const char *temp = titleWithoutATheAnd(currentPtr->primTitle);
+		//strcpy(tempTitle, &temp);
+		//char searchWOATA[500];
+		//temp = titleWithoutATheAnd(searchTitle);
+		//strcpy(searchWOATA, &temp);
 
-		if (tempTitle[0] > searchWOATA[0]) {
+		if (currentPtr->primTitle[0] > searchTitle[0]) {
 			return searchIMDb(currentPtr->left, searchTitle);
 		}
-		else if (tempTitle[0] == searchWOATA[0]) {
-			int searchTitleLength = strlen(searchWOATA);
-			int found = 0;
+		else if (currentPtr->primTitle[0] == searchTitle[0]) {
+			int searchTitleLength = strlen(searchTitle);
 			for (int i = 1; i < searchTitleLength; i = i + 1) {
-				if (tempTitle[i] > searchWOATA[i]) {
+				if (currentPtr->primTitle[i] > searchTitle[i]) {
 					return searchIMDb(currentPtr->left, searchTitle);
 				}
-				else if (tempTitle[i] < searchWOATA[i]) {
+				else if (currentPtr->primTitle[i] < searchTitle[i]) {
 					return searchIMDb(currentPtr->right, searchTitle);
 				}
 			}
@@ -181,7 +188,7 @@ struct BST_Movies * searchIMDb(struct BST_Movies *currentPtr, char searchTitle[]
 				return currentPtr;
 			}
 		}
-		else if (tempTitle[0] < searchWOATA[0]) {
+		else if (currentPtr->primTitle[0] < searchTitle[0]) {
 			return searchIMDb(currentPtr->right, searchTitle);
 		}
 		//If movie not found, return NULL

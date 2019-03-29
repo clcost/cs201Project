@@ -1,22 +1,31 @@
 #include "user.h"
 int findMovie() {
-
+	
 	return -1;
 
 }
 
-struct BST_MOVIES * addToUserDB (struct user *pointerToUser, char uniqueId[], char titleType[], char primTitle[], char origTitle[], char adultFilm[], char startYear[], char endYear[], char runTime[], char genre[]) {
-
+struct BST_Movies * addToUserDB (struct user *pointerToUser, char uniqueId[], char titleType[], char primTitle[], char origTitle[], char adultFilm[], char startYear[], char endYear[], char runTime[], char genre[], char dateAdded[], char mediaType[]) {
+	printf("Start of addToUserDB\n");
 	int movieSearchResult = findMovie();
 
 	//if movie is found print message saying it exists already
 	if (movieSearchResult == 0) {
 		printf("Movie is already in user database.\n");
 	}
-
+	
 	else if (movieSearchResult == -1) {
+		printf("Else if addToUserDB\n");
+		
+		if (pointerToUser == NULL) printf("User's tree ptr is NULL here\n");
+		//struct user *tempToUser = (struct user*) malloc (sizeof(struct user));
+		//empToUser->topOfUsersMovieTree = (struct BST_Movies*) malloc (sizeof(struct BST_Movies));
+		//tempToUser->topOfUsersMovieTree = pointerToUser->topOfUsersMovieTree;
+		
+		printf("right before insertBST call\n");
 
-		insertToMovieBST(pointerToUser->topOfUsersMovieTree, uniqueId, titleType, primTitle, origTitle, adultFilm, startYear, endYear, runTime, genre);
+		return insertToMovieBST(pointerToUser->topOfUsersMovieTree, uniqueId, titleType, primTitle, origTitle, adultFilm, startYear, endYear, runTime, genre, dateAdded, mediaType);
+
 	}
 
 	else {
@@ -46,7 +55,7 @@ void printUserMenu() {
 
 struct user * findUser(struct user **firstUser, char userName[]) {
 	struct user *currentUser = (struct user*) malloc (sizeof(struct user));
-	currentUser->topOfUsersMovieTree = (struct user*) malloc (sizeof(struct user));
+	currentUser->topOfUsersMovieTree = (struct BST_Movies*) malloc (sizeof(struct BST_Movies));
 	currentUser->next = (struct user*) malloc (sizeof(struct user));
 	currentUser->prev = (struct user*) malloc (sizeof(struct user));
 
@@ -83,7 +92,7 @@ struct user * findUser(struct user **firstUser, char userName[]) {
 void createUser(struct user **firstUser, char userName[]) {
 	struct user *new = (struct user*) malloc (sizeof(struct user));
 	strcpy(new->userName, userName);
-	new->topOfUsersMovieTree = (struct user*) malloc (sizeof(struct user));
+	new->topOfUsersMovieTree = (struct BST_Movies*) malloc (sizeof(struct BST_Movies));
 	new->next = (struct user*) malloc (sizeof(struct user));
 	new->prev = (struct user*) malloc (sizeof(struct user));
 
@@ -100,7 +109,7 @@ void createUser(struct user **firstUser, char userName[]) {
 		//let the next attribute of our new user stay NULL
 
 		//set the next attribute of the last user in the list to the new user
-		int foundUser = -1;
+		//int foundUser = -1;
 		struct user *currentUser = (struct user*) malloc (sizeof(struct user));
 		currentUser->next = (struct user*) malloc (sizeof(struct user));
 		currentUser->prev = (struct user*) malloc (sizeof(struct user));
@@ -214,7 +223,9 @@ void deletefromUserDB(struct user * rootPtr, char movieTitle[]) {
 	}
 
 	struct BST_Movies *newRoot = (struct BST_Movies*) malloc (sizeof(struct BST_Movies));
-	newRoot = recursiveDeleteUserDB(rootPtr, movieTitle);
+	newRoot = recursiveDeleteUserDB(rootPtr->topOfUsersMovieTree, movieTitle);
+	//set user's new topOfMovieTree
+	rootPtr->topOfUsersMovieTree = newRoot;
 	
 
 }
@@ -224,33 +235,55 @@ struct BST_Movies * recursiveDeleteUserDB(struct BST_Movies *rootPtr, char movie
 	deletePtr->right = (struct BST_Movies*) malloc (sizeof(struct BST_Movies));
 	deletePtr->left = (struct BST_Movies*) malloc (sizeof(struct BST_Movies));
 	deletePtr->parent = (struct BST_Movies*) malloc (sizeof(struct BST_Movies));
-	deletePtr = searchIMDb(rootPtr, movieTitle);
 
-	if (deletePtr != NULL) {
+	//deletePtr = searchIMDb(rootPtr, movieTitle);
+	if (rootPtr == NULL) {
+		return rootPtr;
+	}
+
+	if (strcmp(movieTitle, rootPtr->primTitle) < 0) {
+	       rootPtr->left = recursiveDeleteUserDB(rootPtr->left, movieTitle);
+	}
+	else if (strcmp(movieTitle, rootPtr->primTitle) > 0) {
+		rootPtr->right = recursiveDeleteUserDB(rootPtr->right, movieTitle);
+	}	
+
+	else {
 		//check if movie has only one child or no child
-		if (deletePtr->left == NULL) {
+		if (rootPtr->left == NULL) {
 			struct BST_Movies *temp = (struct BST_Movies*) malloc (sizeof(struct BST_Movies));
-			temp = deletePtr->right;
-			free(deletePtr);
+			temp = rootPtr->right;
+			free(rootPtr);
 			return temp;
 		}
 
-		else if (deletePtr->right == NULL) {
+		else if (rootPtr->right == NULL) {
 			struct BST_Movies *temp = (struct BST_Movies*) malloc (sizeof(struct BST_Movies));
-			temp = deletePtr->left;
-			free(deletePtr);
+			temp = rootPtr->left;
+			free(rootPtr);
 			return temp;
 		}
 
 		//movie with two children
 		//get inorder successor
 		struct BST_Movies *temp = (struct BST_Movies*) malloc (sizeof(struct BST_Movies));
-		temp = minMovieVal(deletePtr->right);
+		temp = minMovieVal(rootPtr->right);
 		
-		deletePtr->parent = temp;
+		strcpy(temp->uniqueId, rootPtr->uniqueId);
+		strcpy(temp->titleType, rootPtr->titleType);
+		strcpy(temp->primTitle, rootPtr->primTitle);
+		strcpy(temp->origTitle, rootPtr->origTitle);
+		strcpy(temp->adultFilm, rootPtr->adultFilm);
+		strcpy(temp->startYear, rootPtr->startYear);
+		strcpy(temp->endYear, rootPtr->endYear);
+		strcpy(temp->runTime, rootPtr->runTime);
+		strcpy(temp->genre, rootPtr->genre);
+		strcpy(temp->dateAdded, rootPtr->dateAdded);
+		strcpy(temp->mediaType, rootPtr->mediaType);
 
-		recursiveDeleteUserDB(deletePtr->right, temp->primTitle);
+		recursiveDeleteUserDB(rootPtr->right, temp->primTitle);
 	}
+	return rootPtr;
 }
 
 struct BST_Movies * minMovieVal(struct BST_Movies *ptr) {
@@ -264,12 +297,17 @@ struct BST_Movies * minMovieVal(struct BST_Movies *ptr) {
 	return currentPtr;
 }
 
-void modifyUserDB(struct user * rootPtr, char movieTitle[]) {
+void modifyUserDB(struct user * rootPtr, char movieTitle[], char newDateAdded[], char newMediaType[]) {
+	struct BST_Movies *currentPtr = (struct BST_Movies*) malloc (sizeof(struct BST_Movies));
+	currentPtr = rootPtr->topOfUsersMovieTree;
+	currentPtr = searchIMDb(currentPtr, movieTitle);
 
-}
+	if (currentPtr == NULL) {
+		return;
+	}
 
-void previewUserDB(struct user * rootPtr) {
-	printList(rootPtr);
+	strcpy(currentPtr->dateAdded, newDateAdded);
+	strcpy(currentPtr->mediaType, newMediaType);
 }
 
 void downloadUserFile(struct user * rootPtr, char userName[]) {

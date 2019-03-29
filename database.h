@@ -21,10 +21,10 @@ typedef struct BST_Movies {
 	struct BST_Movies * left;
 	struct BST_Movies * right;
 	struct BST_Movies * parent;
-} BST_MOVIES;
+} BST_Movies;
 
 void printMainMenu();
-struct BST_Movies * insertToMovieBST(struct BST_Movies *, char[], char[], char[], char[], char[], char[], char[], char[], char[]);
-const char * titleWithoutATheAnd(char[]);
+struct BST_Movies * insertToMovieBST(struct BST_Movies *, char[], char[], char[], char[], char[], char[], char[], char[], char[], char[], char[]);
+char * titleWithoutATheAnd(char[]);
 struct BST_Movies * searchIMDb(struct BST_Movies *, char[]);
 void printList(struct BST_Movies *);

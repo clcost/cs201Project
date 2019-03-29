@@ -16,26 +16,25 @@ int main (void) {
 	char endYear[6];
 	char runTime[20];
 	char genre[50];
-	char temp;
 
 	int i = 0;
-	//FIX
+
 	struct user *PointerToFirstUser = (struct user*) malloc (sizeof(struct user));
 	PointerToFirstUser = NULL;
 
 	struct user *PointerToUser = (struct user*) malloc (sizeof(struct user));
 	PointerToUser = NULL;
 
-	BST_MOVIES *topOfTree = NULL;
+	BST_Movies *topOfTree = NULL;
 	
 	FILE *fp = fopen("movie_records_sample", "r");
 
 	printf("Creating IMDb Movie Database.\n");
-	printf("Loading all IMDb Movies into BST database... (Please be patient, may take a couple minutes)\n");
- 		
+	printf("Loading all IMDb Movies into BST database... (Please be patient)\n");
+	while(1) {
 		fscanf(fp, "%s", uniqueId);			//scanning in uniqueId and titleType from file
 		fscanf(fp, "%s", titleType);
-		temp = fgetc(fp);
+/*		temp = fgetc(fp);
 	
 	while (1) {
 		i = 0;
@@ -67,6 +66,9 @@ int main (void) {
 			temp = fgetc(fp);
 		}
 		origTitle[i] = '\0';
+*/		if (feof(fp)) break;
+		fscanf(fp, " %[^\t]s", primTitle);
+		fscanf(fp, " %[^\t]s", origTitle);
 
 		fscanf(fp, "%s", adultFilm);			//reading in the rest of the variables from file
 		fscanf(fp, "%s", startYear);
@@ -74,15 +76,27 @@ int main (void) {
 		fscanf(fp, "%s", runTime);
 		fscanf(fp, "%s", genre);
 
-		topOfTree = insertToMovieBST(topOfTree, uniqueId, titleType, primTitle, origTitle, adultFilm, startYear, endYear, runTime, genre);
+		topOfTree = insertToMovieBST(topOfTree, uniqueId, titleType, primTitle, origTitle, adultFilm, startYear, endYear, runTime, genre, "empty", "empty");
 
-		temp = fgetc(fp);
-		fscanf(fp, "%s", uniqueId);			//read first catagory again
-
-		if (feof(fp)) break; 				//if we are at end of file, break the loop
-
-		fscanf(fp, "%s", titleType); 			//read second catagory again
+//		temp = fgetc(fp);
+//		fscanf(fp, "%s", uniqueId);			//read first catagory again
+//
+		/*printf("[%s]", uniqueId);
+		printf("[%s]", titleType);
+		printf("[%s]", primTitle);
+		printf("[%s]", origTitle);
+		printf("[%s]", adultFilm);
+		printf("[%s]", startYear);
+		printf("[%s]", endYear);
+		printf("[%s]", runTime);
+		printf("[%s]", genre);
+		printf("\n");
+		*/
+		//if (feof(fp)) break; 				//if we are at end of file, break the loop
 	}
+
+//		fscanf(fp, "%s", titleType); 			//read second catagory again
+//	}
 
 	fclose(fp);
 
@@ -149,9 +163,10 @@ Mainmenu:
 		printf("New User Creation: What is your name? (Please use first name and max is 100 characters)\n");
 		scanf("%s", userName);
 		createUser(&PointerToFirstUser, userName);
-		printf("Welcome %s to the User Menu!\n", userName);
+		//printf("Welcome %s to the User Menu!\n", userName);
+		printf("User Database created! Use the login option to log into your database.\n\n");
 		
-		goto Usermenu;
+		goto Mainmenu;
 	}
 	else if(strcmp(option, "login") == 0) {
 		//login with existing user and jump to user menu
@@ -227,26 +242,82 @@ Usermenu:
 			printf("%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n\n", foundMoviePtr->uniqueId, foundMoviePtr->titleType, foundMoviePtr->primTitle, foundMoviePtr->origTitle, foundMoviePtr->adultFilm, foundMoviePtr->startYear, foundMoviePtr->endYear, foundMoviePtr->runTime, foundMoviePtr->genre);
 YN:
 			printf("Is this the movie you wish to add to your database? (Yes or No)\n");
-			scanf(" %s", choiceYN);
-			strcpy(choiceYN, tolower(choiceYN));
-			if (strcmp(choiceYN, "yes") != 0 || strcmp(choiceYN, "no") != 0) {
+			scanf("%s", choiceYN);
+			while (choiceYN[i]) {
+				choiceYN[i] = tolower(choiceYN[i]);
+			}
+
+			if (strcmp(choiceYN, "yes") != 0 && strcmp(choiceYN, "no") != 0) {
 				printf("You did not enter Yes or No. Try again please.\n");
 				goto YN;
 			}
-			if (strcmp(choiceYN, "no" == 0)) {
+
+			if (strcmp(choiceYN, "no") == 0) {
 				printf("You did not want to add this movie. Returning to User Menu.\n\n");
 				goto Usermenu;
 			}
+			else if(strcmp(choiceYN, "yes") == 0) {
+				printf("When is the date you acquired this movie? (Format mm/dd/yyyy)\n");
+				scanf("%s", dateObtained);
+				printf("What kind of copy did you obtain? (Choices: DVD, Blu-Ray, Digital, Other)\n");
+				scanf("%s", mediaTypes);
+				//insert into user's database
+				PointerToUser->topOfUsersMovieTree = addToUserDB(PointerToUser, foundMoviePtr->uniqueId, foundMoviePtr->titleType, foundMoviePtr->primTitle, foundMoviePtr->origTitle, foundMoviePtr->adultFilm, foundMoviePtr->startYear, foundMoviePtr->endYear, foundMoviePtr->runTime, foundMoviePtr->genre, foundMoviePtr->dateAdded, foundMoviePtr->mediaType);
 
-
-
+				printf("Movie was added to your personal database!\n\n");
+				printList(PointerToUser->topOfUsersMovieTree);
+			}	
 		}
-
 
 		goto Usermenu;
 	}
 	else if (strcmp(option, "delete") == 0) {
 		//deletes a certain movie from the user's database
+		char choiceYN[4];
+		
+		struct BST_Movies *foundMoviePtr = (struct BST_Movies*) malloc (sizeof(struct BST_Movies));
+		foundMoviePtr = NULL;
+
+		printf("Your current database is listed below: (Alphabetical Order)\n\n");
+		printList(PointerToUser->topOfUsersMovieTree);
+		printf("Please enter the exact movie title you wish to delete from your database (titles are case-sensitive):\n");
+		scanf(" %[^\n]s", titleName);
+
+		foundMoviePtr = searchIMDb(PointerToUser->topOfUsersMovieTree, titleName);
+		if (foundMoviePtr == NULL) {
+			printf("Movie does not exist in your database. Returning to User Menu.\n\n");
+		}
+		else {
+			printf("The movie you want to delete is shown below:\n");
+			printf("%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n\n", foundMoviePtr->titleType, foundMoviePtr->primTitle, foundMoviePtr->origTitle, foundMoviePtr->adultFilm, foundMoviePtr->startYear, foundMoviePtr->runTime, foundMoviePtr->genre, foundMoviePtr->dateAdded, foundMoviePtr->mediaType);
+YN2:
+			printf("Is this the movie you wish to delete from your database? (Yes or No)\n");
+			scanf("%s", choiceYN);
+			int i = strlen(choiceYN) - 1;
+			while (i >= 0) {
+				printf("here\n");
+				choiceYN[i] = tolower(choiceYN[i]);
+			}
+
+			if (strcmp(choiceYN, "yes") != 0 && strcmp(choiceYN, "no") != 0) {
+				printf("You did not enter Yes or No. Try again please.\n");
+				goto YN2;
+			}
+
+			if (strcmp(choiceYN, "no") == 0) {
+				printf("You did not wat to delete this movie from your database. Returning to User Menu.\n\n");
+				goto Usermenu;
+			}
+
+			else if (strcmp(choiceYN, "yes") == 0) {
+				deletefromUserDB(PointerToUser, titleName);
+				printf("Movie deleted from your database!\n");
+				printf("After deletion here is your new database:\n\n");
+				printList(PointerToUser->topOfUsersMovieTree);
+				printf("Returning to User Menu.\n\n");
+			}
+		}
+
 		goto Usermenu;
 	}
 	else if (strcmp(option, "update") == 0) {
@@ -255,6 +326,7 @@ YN:
 	}
 	else if (strcmp(option, "modify")) {
 		//User can modify their file and change date obtained and/or version of movie
+		//User updayes the day they obtained movie and the media type they own it on
 		goto Usermenu;
 	}
 	else if (strcmp(option, "preview") == 0) {
@@ -262,7 +334,7 @@ YN:
 		goto Usermenu;
 	}
 	else if (strcmp(option, "download") == 0) {
-		//sorts users database by title using some sort of sorting algorithm that is efficient
+		//prints user's database to a file
 		goto Usermenu;
 	}
 	else {
