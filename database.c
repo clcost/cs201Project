@@ -36,13 +36,22 @@ struct BST_Movies * insertToMovieBST(struct BST_Movies *rootptr, char uniqueId[]
 		currentMovie->left = (struct BST_Movies*) malloc (sizeof(struct BST_Movies));
 		currentMovie = rootptr;
 		int i = 0;
+		int larger = 0;
 		int endOfTitle = strlen(primTitle);
+		int endOfCurr = strlen(currentMovie->primTitle);
 		int notPlaced = -1;
 			
 		while (notPlaced == -1) {
+			endOfCurr = strlen(currentMovie->primTitle);
+			if (endOfCurr > endOfTitle) {
+				larger = endOfCurr;
+			}
+			else {
+				larger = endOfTitle;
+			}
 			
 			//Compares titles letter by letter to ensure they are put in the exact right spot
-			for (i = 0; i < endOfTitle; i = i + 1) {
+			for (i = 0; i < larger; i = i + 1) {
 				//Temporary char to hold the letters being compared from each title
 				char currTreeChar = currentMovie->primTitle[i];
 				char currnewChar = primTitle[i];
@@ -165,7 +174,16 @@ struct BST_Movies * searchIMDb(struct BST_Movies *currentPtr, char searchTitle[]
 		//compare char by char 
 		else if (currentPtr->primTitle[0] == searchTitle[0]) {
 			int searchTitleLength = strlen(searchTitle);
-			for (int i = 1; i < searchTitleLength; i = i + 1) {
+			int currentTitleLength = strlen(currentPtr->primTitle);
+			int largerLength = 0;
+			if (searchTitleLength > currentTitleLength) {
+				largerLength = searchTitleLength;
+			}
+			else {
+				largerLength = currentTitleLength;
+			}
+
+			for (int i = 1; i <= largerLength; i = i + 1) {
 				//Recursive left
 				if (currentPtr->primTitle[i] > searchTitle[i]) {
 					return searchIMDb(currentPtr->left, searchTitle);
